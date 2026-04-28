@@ -4,75 +4,169 @@
 
 ### Что это
 
-PC-Remote-NET это проект для удаленного управления компьютером с телефона.  
-Проще говоря: ставишь программу на ПК, ставишь приложение на Android, связываешь их между собой и после этого можешь управлять нужными функциями компьютера без прямого доступа к нему.
+PC-Remote-NET это приложение для удаленного управления компьютером с телефона на Android.
 
-### Для кого это
+Идея простая:
 
-Проект сделан для обычного пользователя, которому нужно:
+- на компьютер ставится Windows-программа
+- на телефон ставится Android-приложение
+- устройства связываются между собой
+- после этого телефон работает как пульт для ПК
 
-- быстро подключиться к своему ПК
-- отправить команду с телефона
-- выполнить базовые действия без сложной настройки
-- использовать отдельное приложение, а не перегруженные корпоративные решения
+Проект рассчитан не на системных администраторов, а на обычного пользователя, которому нужно включить компьютер, подключиться к нему и отправить нужную команду без сложных корпоративных решений.
 
-### Как это работает
+### Как это работает в обычных словах
 
-Внутри проект состоит из двух основных частей:
+На компьютере работает установленная программа. Она ждёт команды от твоего телефона.
 
-- Windows-программа на компьютере
-- Android-приложение на телефоне
+Когда ты нажимаешь кнопку в мобильном приложении:
 
-Сценарий работы простой:
+1. телефон отправляет запрос
+2. компьютер получает его через локальную сеть или через интернет
+3. установленная Windows-часть выполняет нужное действие
 
-1. На компьютере устанавливается программа, которая принимает команды.
-2. На телефоне открывается мобильное приложение.
-3. Устройства связываются между собой через QR-код.
-4. После привязки телефон получает доступ к управлению компьютером.
-5. Когда ты нажимаешь действие в приложении, команда отправляется на ПК и выполняется там.
+Если компьютер выключен, приложение может сначала попытаться включить его через Wake-on-LAN, а уже потом работать с ним дальше.
 
-То есть телефон сам ничего не делает с компьютером напрямую.  
-Он только отправляет команду, а уже установленная программа на Windows принимает ее и выполняет нужное действие.
+### Два режима работы
+
+#### 1. Локальная сеть
+
+Это самый простой вариант.
+
+Он подходит, когда:
+
+- телефон и компьютер подключены к одному роутеру
+- оба устройства находятся в одной домашней сети
+
+В этом режиме приложение работает через локальный IP-адрес компьютера, например `192.168.0.100`.
+
+Плюс этого режима в том, что он проще и стабильнее.  
+Ничего не нужно открывать наружу в интернет.
+
+#### 2. Через интернет
+
+Этот режим нужен, если ты хочешь управлять своим ПК не из дома, а из любой точки.
+
+В этом случае приложение подключается к твоему роутеру через внешний адрес, а роутер уже перенаправляет запрос на нужный компьютер внутри дома.
+
+Для этого обычно нужны:
+
+- белый внешний IP-адрес
+- проброс порта на роутере
+- правильная настройка Wake-on-LAN
+
+### Что такое проброс порта
+
+Если объяснить совсем просто, проброс порта говорит роутеру:
+
+> "Когда команда приходит из интернета на определённый порт, отправь её вот этому компьютеру внутри сети."
+
+Без этого роутер не понимает, какому именно устройству внутри дома нужно передать внешний запрос.
+
+Для PC-Remote-NET это важно, если ты хочешь:
+
+- включать ПК через интернет
+- отправлять команды не из локальной сети, а извне
+
+### Что такое белый внешний IP
+
+Белый внешний IP это настоящий публичный адрес твоего интернета, который виден снаружи.
+
+Если он есть, твой роутер можно найти из интернета напрямую.  
+Именно это и нужно для нормального внешнего доступа к домашнему ПК.
+
+Примерно это выглядит так:
+
+- у тебя дома есть роутер
+- провайдер выдаёт ему внешний IP
+- приложение подключается к этому адресу
+- роутер пересылает команду на твой ПК
+
+### Что такое CGNAT
+
+CGNAT это ситуация, когда провайдер не даёт тебе настоящий внешний IP, а сажает сразу много клиентов за один общий адрес.
+
+Для пользователя это означает следующее:
+
+- интернет дома работает
+- сайты открываются
+- но подключиться к своему дому снаружи напрямую нельзя
+
+Именно поэтому при CGNAT часто не работают:
+
+- проброс портов
+- прямой доступ к домашнему ПК из интернета
+- Wake-on-LAN через внешний адрес
+
+Если коротко:  
+при CGNAT роутер у тебя дома может быть настроен правильно, но извне до него всё равно невозможно достучаться напрямую.
+
+### Что такое DDNS
+
+DDNS это способ привязать постоянное доменное имя к твоему внешнему IP-адресу.
+
+Это нужно, если провайдер меняет внешний IP время от времени.
+
+Тогда вместо того чтобы каждый раз искать новый адрес, ты используешь один и тот же домен, например:
+
+- `myhome.ddns.net`
+
+Смысл очень простой:
+
+- провайдер поменял IP
+- DDNS обновил привязку
+- приложение продолжает использовать то же доменное имя
+
+DDNS полезен только тогда, когда у тебя вообще есть белый внешний IP.  
+Если у тебя CGNAT, один только DDNS проблему не решит.
+
+### Wake-on-LAN простыми словами
+
+Wake-on-LAN позволяет отправить специальный сетевой сигнал, чтобы компьютер включился.
+
+Но для этого недостаточно просто поставить приложение.  
+Должны совпасть сразу несколько условий:
+
+- функция Wake-on-LAN включена в BIOS/UEFI
+- сетевая карта в Windows разрешает пробуждение
+- компьютер подключён по Ethernet, а не по Wi-Fi
+- роутер настроен корректно
+
+Если одно из этих условий не выполнено, включение по сети может не работать даже при правильном приложении.
 
 ### Что умеет проект
 
-- связывать телефон и компьютер через QR-код
+- связывать телефон и компьютер
+- работать внутри одной сети
+- работать через интернет при правильной сетевой настройке
 - отправлять команды на ПК
-- работать через отдельный фоновый сервис на Windows
-- использовать защищенный обмен данными между устройствами
-- давать простой способ управления без ручной настройки команд
+- использовать фоновую Windows-службу для выполнения действий
+- использовать Wake-on-LAN для включения компьютера
 
-### Как устроено с точки зрения пользователя
+### Как проект устроен без лишней технички
 
-Для пользователя все выглядит так:
+Внутри есть три части:
 
-- на ПК ставится Windows-версия
-- на телефон ставится Android-версия
-- один раз выполняется привязка
-- дальше телефон используется как пульт управления для компьютера
+- `Windows Client` — видимая программа на компьютере
+- `Windows Service` — фоновая часть, которая реально выполняет команды
+- `Android Client` — мобильное приложение
 
-### Установщики
+Пользователю не нужно вникать в код.  
+Важно понимать только одно: мобильное приложение отправляет запрос, а Windows-часть принимает его и делает нужное действие на компьютере.
 
-Для использования проекта нужны готовые установочные файлы:
+### Загрузка
+
+Для обычного пользователя правильнее скачивать готовые сборки через GitHub Releases, а не из исходников репозитория.
+
+Там должны лежать:
+
+- Android APK
+- Windows installer
+
+Пока релизная схема не настроена, в репозитории уже есть готовые файлы:
 
 - Android: [PC Remote NET.apk](./downloads/PC%20Remote%20NET.apk)
 - Windows: [PCRemoteSetup.exe](./downloads/PCRemoteSetup.exe)
-
-### Архитектура проекта
-
-Без лишней технической детализации проект делится на три части:
-
-- `Windows Client` — интерфейс на Windows
-- `Windows Service` — фоновая часть, которая реально выполняет команды на компьютере
-- `Android Client` — мобильное приложение для управления
-
-Смысл этой схемы простой:  
-интерфейс показывает состояние и принимает действия от пользователя, а отдельный сервис на ПК отвечает за выполнение команд более стабильно и безопасно.
-
-### Главное о проекте
-
-Это не просто один `.exe` и не просто мобильное приложение.  
-Это связка из настольной части, фонового сервиса и Android-клиента, которые работают вместе как единая система удаленного управления компьютером.
 
 ---
 
@@ -80,72 +174,164 @@ PC-Remote-NET это проект для удаленного управлени
 
 ### What It Is
 
-PC-Remote-NET is a project for controlling a computer remotely from a phone.  
-In simple terms: you install the PC app, install the Android app, connect them together, and then use your phone to control selected computer functions.
+PC-Remote-NET is an application for controlling a computer remotely from an Android phone.
 
-### Who It Is For
+The idea is simple:
 
-This project is made for regular users who want to:
+- install the Windows app on the computer
+- install the Android app on the phone
+- link the devices together
+- use the phone as a remote control for the PC
 
-- connect to their PC quickly
-- send commands from a phone
-- perform basic remote actions without complicated setup
-- use a focused personal tool instead of heavy enterprise software
+This project is aimed at normal users, not system administrators. It is meant for someone who wants to wake up a computer, connect to it, and send commands without using heavy enterprise tools.
 
-### How It Works
+### How It Works in Simple Terms
 
-The project has two main user-facing parts:
+The installed Windows side runs on the computer and waits for commands from the phone.
 
-- a Windows application on the computer
-- an Android application on the phone
+When you press a button in the mobile app:
 
-The flow is simple:
+1. the phone sends a request
+2. the computer receives it through the local network or through the internet
+3. the Windows side performs the requested action
 
-1. You install the Windows app on the PC.
-2. You open the Android app on the phone.
-3. The devices are paired using a QR code.
-4. After pairing, the phone is linked to the computer.
-5. When you press an action in the app, the command is sent to the PC and executed there.
+If the computer is powered off, the app can first try to wake it up through Wake-on-LAN and then continue working with it.
 
-So the phone does not directly control the computer by itself.  
-It sends a request, and the installed Windows side receives that request and performs the action on the machine.
+### Two Connection Modes
+
+#### 1. Local Network
+
+This is the easiest mode.
+
+It is used when:
+
+- the phone and the computer are connected to the same router
+- both devices are inside the same home network
+
+In this mode, the app connects through the computer's local IP address, such as `192.168.0.100`.
+
+This is the simplest and most reliable setup because nothing has to be exposed to the internet.
+
+#### 2. Through the Internet
+
+This mode is needed if you want to control your PC while you are away from home.
+
+In that case, the app connects to your router through an external address, and the router forwards the request to the correct computer inside your home network.
+
+This usually requires:
+
+- a public external IP address
+- port forwarding on the router
+- proper Wake-on-LAN setup
+
+### What Port Forwarding Means
+
+In simple words, port forwarding tells your router:
+
+> "When something arrives from the internet on this port, send it to this specific computer inside the network."
+
+Without that, the router does not know which device inside your home should receive the incoming request.
+
+For PC-Remote-NET, this matters if you want to:
+
+- wake up the PC over the internet
+- send commands from outside your local network
+
+### What a Public External IP Is
+
+A public external IP is a real internet-facing address assigned to your connection.
+
+If you have one, your router can be reached directly from the internet.  
+That is what makes direct remote access possible.
+
+The rough idea is:
+
+- your router gets an external IP from the provider
+- the app connects to that address
+- the router passes the request to the PC inside your home
+
+### What CGNAT Is
+
+CGNAT means your provider does not give you a real public IP and instead places many customers behind one shared external address.
+
+For the user, that usually means:
+
+- the home internet works normally
+- websites open as usual
+- but direct incoming access from the internet is not available
+
+Because of that, CGNAT often breaks:
+
+- port forwarding
+- direct access to a home PC from outside
+- Wake-on-LAN through an external address
+
+In short:  
+with CGNAT, your router may be configured correctly, but outside devices still cannot reach it directly.
+
+### What DDNS Is
+
+DDNS is a way to bind a permanent domain name to your changing external IP address.
+
+This is useful when your provider changes your public IP from time to time.
+
+Instead of checking the new address every time, you use one domain name, for example:
+
+- `myhome.ddns.net`
+
+The idea is simple:
+
+- your provider changes the IP
+- DDNS updates the domain mapping
+- the app keeps using the same host name
+
+DDNS is useful only if you actually have a public external IP.  
+If you are behind CGNAT, DDNS alone will not solve the problem.
+
+### Wake-on-LAN in Simple Terms
+
+Wake-on-LAN lets a device send a special network signal that turns the computer on.
+
+But installing the app alone is not enough.  
+Several things must be set correctly:
+
+- Wake-on-LAN must be enabled in BIOS/UEFI
+- the network adapter in Windows must allow wake events
+- the computer should use Ethernet instead of Wi-Fi
+- the router should be configured correctly
+
+If one of these conditions is missing, waking the PC over the network may fail even if the app itself is fine.
 
 ### What the Project Does
 
-- pairs a phone and a computer through a QR-based flow
-- sends remote commands to the PC
-- uses a dedicated background Windows service
-- exchanges data between devices in a protected way
-- provides a simpler control experience without manual command setup
+- links a phone and a computer
+- works inside one local network
+- works through the internet when the network is configured correctly
+- sends commands to the PC
+- uses a background Windows service to perform actions
+- supports Wake-on-LAN for turning the computer on
 
-### User View
+### High-Level Structure
 
-From a normal user perspective, the experience is:
+There are three main parts inside the project:
 
-- install the Windows version on the PC
-- install the Android version on the phone
-- pair the devices once
-- use the phone as a remote control for the computer
+- `Windows Client` — the visible app on the computer
+- `Windows Service` — the background part that actually performs commands
+- `Android Client` — the mobile application
 
-### Installers
+The user does not need to understand the source code.  
+The key idea is simple: the mobile app sends the request, and the Windows side receives it and performs the action on the computer.
 
-The project is intended to be used through ready-made installers:
+### Downloads
+
+For normal users, the correct way to get the application is through GitHub Releases rather than through raw repository files.
+
+That is where the project should provide:
+
+- Android APK
+- Windows installer
+
+Until the release flow is fully set up, the repository already contains the current files:
 
 - Android: [PC Remote NET.apk](./downloads/PC%20Remote%20NET.apk)
 - Windows: [PCRemoteSetup.exe](./downloads/PCRemoteSetup.exe)
-
-### Project Architecture
-
-At a high level, the project is split into three parts:
-
-- `Windows Client` — the desktop interface
-- `Windows Service` — the background component that actually executes commands on the PC
-- `Android Client` — the mobile control app
-
-The reason for this structure is simple:  
-the visible app handles interaction, while the background service on Windows is responsible for stable command execution.
-
-### Key Idea
-
-This is not just a standalone `.exe` and not just a mobile app.  
-It is a complete remote-control system where the desktop side, background service, and Android client work together.
