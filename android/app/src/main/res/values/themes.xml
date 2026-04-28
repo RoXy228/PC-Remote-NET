@@ -1,0 +1,17 @@
+<resources>
+
+    <style name="Theme.PCRemoteNET"
+        parent="android:Theme.Material.Light.NoActionBar" />
+
+    <style name="Theme.PCRemote.Splash"
+        parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">#000000</item>
+
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+
+        <item name="postSplashScreenTheme">@style/Theme.PCRemoteNET</item>
+
+    </style>
+
+</resources>

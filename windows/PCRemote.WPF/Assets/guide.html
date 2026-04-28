@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PC Remote — руководство</title>
+  <style>
+    :root {
+      --bg: #1b2838;
+      --panel: #16202d;
+      --accent: #1b75d0;
+      --accent-soft: #66c0f4;
+      --text: #c7d5e0;
+      --muted: #8f98a0;
+      --border: rgba(255,255,255,0.06);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, sans-serif;
+      background: radial-gradient(circle at top, rgba(27,117,208,0.14), transparent 35%), var(--bg);
+      color: var(--text);
+    }
+
+    .wrap {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 22px 16px 42px;
+    }
+
+    .section {
+      background: rgba(22,32,45,0.96);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 14px 34px rgba(0,0,0,0.18);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    h1 { font-size: 30px; margin: 0 0 8px; }
+    h2 { font-size: 18px; margin: 0 0 10px; }
+    h3 { font-size: 15px; margin: 0 0 8px; }
+
+    p {
+      color: var(--muted);
+      line-height: 1.65;
+      margin: 0 0 10px;
+      font-size: 14px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+
+    .chip {
+      font-size: 12px;
+      padding: 4px 8px;
+      background: rgba(27,117,208,0.16);
+      border-radius: 6px;
+      color: #d8ecff;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100%;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .mini-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 14px;
+    }
+
+    .mini-card p,
+    .mini-card li {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .flow span {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.05);
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .arrow {
+      color: var(--accent-soft);
+      border: none !important;
+      background: transparent !important;
+      padding: 0 2px !important;
+      font-size: 15px !important;
+    }
+
+    .note {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: rgba(27,117,208,0.10);
+      border: 1px solid rgba(102,192,244,0.12);
+      color: #d8ecff;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .note.warn {
+      background: rgba(255,179,71,0.08);
+      border-color: rgba(255,179,71,0.16);
+      color: #ffe7bf;
+    }
+
+    .note.bad {
+      background: rgba(255,107,107,0.08);
+      border-color: rgba(255,107,107,0.16);
+      color: #ffd1d1;
+    }
+
+    .list {
+      padding-left: 18px;
+      margin: 8px 0 0;
+    }
+
+    .list li {
+      margin-bottom: 5px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .label {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 8px;
+      border-radius: 999px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .ok { background: rgba(126,231,135,0.15); color: #baf7c1; }
+    .warn-tag { background: rgba(255,179,71,0.15); color: #ffd9a0; }
+    .bad-tag { background: rgba(255,107,107,0.15); color: #ffc0c0; }
+
+    .mode-switch {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+    }
+    .mode-btn {
+      background: transparent;
+      border: none;
+      padding: 8px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+    .mode-btn.active {
+      background: rgba(27,117,208,0.2);
+      color: var(--accent-soft);
+    }
+    .mode-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255,255,255,0.05);
+    }
+    .mode-panel {
+      display: none;
+    }
+    .mode-panel.active-panel {
+      display: block;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      align-items: start;
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--accent), var(--accent-soft));
+      color: white;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    .step p { margin-bottom: 0; }
+
+    .fade {
+      animation: fadeUp 0.45s ease both;
+    }
+
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.12s; }
+    .delay-3 { animation-delay: 0.18s; }
+    .delay-4 { animation-delay: 0.24s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ddns-link {
+      cursor: pointer;
+      color: #4169E1;
+      text-decoration: underline;
+    }
+    .ddns-link:hover {
+      text-decoration: none;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      font-family: sans-serif;
+    }
+    .modal-content {
+      background-color: var(--panel);
+      margin: 10% auto;
+      padding: 20px;
+      border: 1px solid var(--border);
+      width: 90%;
+      max-width: 600px;
+      border-radius: 14px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      color: var(--text);
+    }
+    .modal-content h2, .modal-content h3 {
+      color: var(--accent-soft);
+    }
+    .modal-content a {
+      color: var(--accent-soft);
+    }
+    .close {
+      color: var(--muted);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: var(--text);
+    }
+    .ultramarine-link {
+      color: #4169E1;
+      text-decoration: underline;
+    }
+    .ultramarine-link:hover {
+      text-decoration: none;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .grid-2,
+      .grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="section hero fade delay-1">
+    <div class="hero-copy">
+      <div>
+        <h1>PC Remote</h1>
+        <p>Удалённое управление ПК и включение через Wake-on-LAN.</p>
+        <div class="chips">
+          <div class="chip">WPF</div>
+          <div class="chip">Service</div>
+          <div class="chip">TCP 5055</div>
+          <div class="chip">AES-GCM</div>
+          <div class="chip">Named Pipes</div>
+          <div class="chip">WoL</div>
+        </div>
+      </div>
+    </div>
+    <div class="section" style="margin:0; padding:16px; background:rgba(255,255,255,0.03);">
+      <h2>Кратко о проекте</h2>
+      <p>Проект разделён на клиент, службу и общее ядро. Это позволяет отдельно держать интерфейс, команды, сеть и безопасность.</p>
+      <div class="note"><span class="label ok">OK</span>Основной акцент — запуск ПК по сети и удобное удалённое управление.</div>
+    </div>
+  </div>
+
+  <div class="section fade delay-2">
+    <h2>Как работает</h2>
+    <div class="flow">
+      <span>Телефон</span><span class="arrow">→</span>
+      <span>Интернет</span><span class="arrow">→</span>
+      <span>Роутер</span><span class="arrow">→</span>
+      <span>ПК</span>
+    </div>
+    <p style="margin-top:10px;">Команда отправляется с мобильного приложения и выполняется на компьютере через службу. Для запуска ПК по сети используется magic packet.</p>
+  </div>
+
+  <div class="grid-2">
+    <div class="section fade delay-2">
+      <h2>Структура</h2>
+      <div class="flow">
+        <span>Android клиент</span><span class="arrow">→</span>
+        <span>TCP</span><span class="arrow">→</span>
+        <span>Служба</span><span class="arrow">→</span>
+        <span>Команда</span>
+      </div>
+      <div class="note">UI приложение и служба взаимодействуют через Named Pipe, а внешние команды идут через TCP.</div>
+    </div>
+
+    <div class="section fade delay-3">
+      <h2>Режимы</h2>
+      <div class="mini-card" style="margin-bottom:10px;">
+        <h3>Локальный</h3>
+        <p>Подходит для одной сети. Обычно используется локальный IP, например 192.168.x.x.</p>
+      </div>
+      <div class="mini-card">
+        <h3>Внешний</h3>
+        <p>Нужны белый IP, проброс UDP/TCP портов и корректная настройка роутера.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section fade delay-4">
+    <h2>Инструкция</h2>
+    <div class="mode-switch">
+      <button class="mode-btn active" data-mode="local">🏠 Локальная сеть</button>
+      <button class="mode-btn" data-mode="internet">🌍 Интернет (внешний доступ)</button>
+    </div>
+
+    <div id="local-panel" class="mode-panel active-panel">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h3>Настройка ПК (BIOS + Windows)</h3>
+            <ul class="list">
+              <li>Включите Wake-on-LAN в BIOS/UEFI (параметры Wake on LAN, Power On by PCI-E, также выключите ErP).</li>
+              <li>В Windows: Диспетчер устройств → Сетевой адаптер → Свойства → вкладка «Питание»: разрешить выводу из сна, разрешить только magic packet.</li>
+              <li>Во вкладке «Дополнительно» активируйте Wake on Magic Packet.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h3>Настройка роутера (локально)</h3>
+            <ul class="list">
+              <li>Закрепите за ПК постоянный локальный IP через DHCP Reservation (привязка по MAC).</li>
+              <li>Проброс портов НЕ требуется — всё работает внутри вашей сети.</li>
+              <li>Убедитесь, что мобильное приложение и ПК находятся в одной подсети.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h3>Настройка приложения</h3>
+            <ul class="list">
+              <li>Привяжите по QR ваш ПК.</li>
+              <li>Включите пункт "Использовать локальную сеть"</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="internet-panel" class="mode-panel">
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div>
+            <h3>Подготовка: белый IP и WoL на ПК</h3>
+            <ul class="list">
+              <li>Убедитесь, что у провайдера <strong>белый внешний IP</strong>. Проверьте через <a href="http://2ip.ru" target="_blank" class="ultramarine-link">2ip.ru</a> или через PC Remote — он должен совпадать с IP в настройках роутера.</li>
+              <li>Включите WoL в BIOS и Windows (см. шаг 1 локальной инструкции).</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div>
+            <h3>Настройка роутера (проброс портов)</h3>
+            <ul class="list">
+              <li>Закрепите за ПК постоянный локальный IP (DHCP Reservation).</li>
+              <li><strong>Для Wake-on-LAN</strong>: проброс UDP порта. Внешний порт 40000 → внутренний IP ПК, внутренний 40000.</li>
+              <li><strong>Для команд PC Remote</strong>: проброс TCP порта. Внешний порт 5055 → внутренний IP ПК, внутренний 5055.</li>
+              <li>Сохраните настройки и перезагрузите роутер.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div>
+            <h3>DDNS (если IP динамический)</h3>
+            <ul class="list">
+              <li>Используйте <span class="ddns-link" id="ddnsTrigger2">DDNS</span>, чтобы привязать доменное имя к меняющемуся IP.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div>
+            <h3>Настройка приложения</h3>
+            <ul class="list">
+              <li>Привяжите по QR ваш ПК.</li>
+              <li>Если используете DDNS, укажите доменное имя вместо IP.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note warn" style="margin-top: 24px;">
+      <span class="label warn-tag">⚠️ Общие проблемы WoL</span>
+      <ul class="list" style="margin-top: 8px;">
+        <li>ПК не включается — WoL не включён в BIOS или отключён в настройках сетевой карты.</li>
+        <li>Не сделан проброс UDP-порта (для внешнего доступа).</li>
+        <li>Серый IP (CGNAT) — в этом случае внешний доступ без туннеля невозможен.</li>
+        <li>Если ПК включается только первые минуты после выключения, используйте broadcast-адрес (например, 192.168.0.255) вместо IP.</li>
+      </ul>
+    </div>
+
+    <div class="note" style="margin-top: 12px;">
+      <span class="label ok">💡 Рекомендации</span>
+      <ul class="list" style="margin-top: 8px;">
+        <li>Всегда закрепляйте IP за ПК через DHCP резервацию.</li>
+        <li>Используйте проводное подключение (Ethernet) — WoL по Wi-Fi ненадёжен.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="ddnsModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <h2>Что такое DDNS?</h2>
+    <p><strong>DDNS</strong> (Dynamic DNS) — технология, позволяющая привязать постоянное доменное имя к устройству с динамически меняющимся IP-адресом. Особенно полезна, когда провайдер выдаёт часто меняющийся белый IP.</p>
+    <h3>Как настроить DDNS:</h3>
+    <ol>
+      <li>Зайдите в настройки роутера, найдите раздел DDNS, узнайте, какие сервисы он поддерживает.</li>
+      <li>Зарегистрируйтесь на одном из сервисов (No-IP, DuckDNS, DynDNS).</li>
+      <li>Выберите доменное имя (например, myhome.ddns.net).</li>
+      <li>Введите данные от сервиса в роутере (логин, пароль, домен).</li>
+      <li>Если роутер не поддерживает DDNS, установите клиент на постоянно работающий ПК.</li>
+      <li>После настройки используйте домен вместо IP в приложении.</li>
+    </ol>
+    <p>Популярные сервисы: <a href="https://www.noip.com" target="_blank">No-IP</a>, <a href="https://www.duckdns.org" target="_blank">DuckDNS</a>, <a href="https://dyn.com/dns/" target="_blank">DynDNS</a>.</p>
+  </div>
+</div>
+
+<script>
+  const localPanel = document.getElementById('local-panel');
+  const internetPanel = document.getElementById('internet-panel');
+  const modeBtns = document.querySelectorAll('.mode-btn');
+
+  function setActiveMode(mode) {
+    if (mode === 'local') {
+      localPanel.classList.add('active-panel');
+      internetPanel.classList.remove('active-panel');
+      modeBtns.forEach(btn => {
+        if (btn.dataset.mode === 'local') btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    } else {
+      internetPanel.classList.add('active-panel');
+      localPanel.classList.remove('active-panel');
+      modeBtns.forEach(btn => {
+        if (btn.dataset.mode === 'internet') btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+    }
+  }
+
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      setActiveMode(btn.dataset.mode);
+    });
+  });
+
+  const modal = document.getElementById('ddnsModal');
+  const triggers = document.querySelectorAll('.ddns-link');
+  const closeSpan = document.querySelector('.modal .close');
+
+  triggers.forEach(trigger => {
+    trigger.onclick = function(e) {
+      e.preventDefault();
+      modal.style.display = 'block';
+    };
+  });
+  if (closeSpan) {
+    closeSpan.onclick = function() {
+      modal.style.display = 'none';
+    };
+  }
+  window.onclick = function(event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+</script>
+</body>
+</html>
